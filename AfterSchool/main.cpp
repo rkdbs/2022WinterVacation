@@ -12,9 +12,11 @@ int main(void) {
 	while (window.isOpen()) {
 		Event event;
 		while (window.pollEvent(event)) {
-			// 종료(x) 버튼을 누르면
-			if (event.type == Event::Closed)
-				window.close(); // 창 닫기
+			switch (event.type) {
+				// 종료(x) 버튼을 누르면 Event::Closed(0)
+				case Event::Closed:
+					window.close(); // 윈도우 닫기
+			}
 		}
 	}
 
