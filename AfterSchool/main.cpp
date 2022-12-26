@@ -25,7 +25,7 @@ int main(void) {
 		enemy[i].setSize(Vector2f(70, 70));
 		enemy[i].setFillColor(Color::Yellow);
 		enemy_life[i] = 1;
-		enemy[i].setPosition(rand()%640, rand()%480);
+		enemy[i].setPosition(rand()%300+300, rand()%480); // 300~599
 	}
 
 	// 윈도우가 열려있을 때까지 반복
@@ -72,6 +72,5 @@ int main(void) {
 
 		window.display();
 	}
-
 	return 0;
 }
