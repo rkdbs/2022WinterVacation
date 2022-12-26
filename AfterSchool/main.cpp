@@ -7,11 +7,13 @@ int main(void) {
 
 	// 윈도우창 생성
 	RenderWindow window(VideoMode(640, 480), "AfterSchool");
+	window.setFramerateLimit(60); // 60분에 1초 동안 반복문이 돌아감 빨리 가지 않게끔
 
 	RectangleShape player;
 	player.setSize(Vector2f(40, 40));
 	player.setPosition(100, 100); // 100, 100 기준으로 40 40 네모 그리기
 	player.setFillColor(Color::Red); // 색깔 Red로 교체
+	int player_speed = 5;
 
 	// 윈도우가 열려있을 때까지 반복
 	while (window.isOpen()) {
@@ -23,7 +25,24 @@ int main(void) {
 					window.close(); // 윈도우 닫기
 			}
 		}
+
+		if (Keyboard::isKeyPressed(Keyboard::Left)) {
+			player.move(-player_speed, 0);
+		}
+		if (Keyboard::isKeyPressed(Keyboard::Up)) {
+			player.move(0, -player_speed);
+		}
+		if (Keyboard::isKeyPressed(Keyboard::Down)) {
+			player.move(0, player_speed);
+		}
+		if (Keyboard::isKeyPressed(Keyboard::Right)) { // else if 사용 X why? => if left top 두 개를 동시에 누르면?
+			player.move(player_speed, 0);
+		}
+
+		window.clear(Color::Black);
+
 		window.draw(player);
+
 		window.display();
 	}
 
