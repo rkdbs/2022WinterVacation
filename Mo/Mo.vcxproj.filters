@@ -18,5 +18,11 @@
     <ClCompile Include="switch.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="rand.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="rand.c">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
