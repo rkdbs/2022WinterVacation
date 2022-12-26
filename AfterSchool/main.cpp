@@ -44,6 +44,10 @@ int main(void) {
 			player.move(player_speed, 0);
 		}
 
+		if (player.getGlobalBounds().intersects(enemy.getGlobalBounds())) { // 겹치는 것이 있는지 판단
+			printf("enemy과 충돌\n");
+		}
+
 		window.clear(Color::Black);
 
 		// draw는 나중에 호출할수록 우선순위가 높아짐
