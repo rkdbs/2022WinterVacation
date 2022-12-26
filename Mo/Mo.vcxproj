@@ -141,7 +141,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="rand.c" />
-    <ClCompile Include="rand.cpp" />
     <ClCompile Include="switch.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
     </ClCompile>

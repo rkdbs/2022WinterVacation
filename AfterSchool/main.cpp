@@ -1,5 +1,7 @@
 #include <stdio.h>
 #include <SFML/Graphics.hpp>
+#include <stdlib.h>
+#include <time.h>
 
 using namespace sf;
 
@@ -8,6 +10,8 @@ int main(void) {
 	// 윈도우창 생성
 	RenderWindow window(VideoMode(640, 480), "AfterSchool");
 	window.setFramerateLimit(60); // 60분에 1초 동안 반복문이 돌아감 빨리 가지 않게끔
+
+	srand(time(0));
 
 	RectangleShape player;
 	player.setSize(Vector2f(40, 40));
@@ -21,7 +25,7 @@ int main(void) {
 		enemy[i].setSize(Vector2f(70, 70));
 		enemy[i].setFillColor(Color::Yellow);
 		enemy_life[i] = 1;
-		enemy[i].setPosition(500, 100 * i);
+		enemy[i].setPosition(rand()%640, rand()%480);
 	}
 
 	// 윈도우가 열려있을 때까지 반복
