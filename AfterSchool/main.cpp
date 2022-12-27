@@ -21,6 +21,7 @@ int main(void) {
 	text.setCharacterSize(50); // 글자크기 조절
 	text.setFillColor(Color(255, 255, 255));
 	text.setPosition(0, 0);
+	char info[40];
 	text.setString("score");
 
 	RectangleShape player;
@@ -90,7 +91,8 @@ int main(void) {
 			}
 		}
 
-		printf("score : %d\n", player_score);
+		sprintf(info, "score : %d\n", player_score); // 실시간으로 점수가 변경되기 때문
+		text.setString(info);
 
 		window.clear(Color::Black);
 
