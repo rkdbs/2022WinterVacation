@@ -11,6 +11,7 @@ struct Player {
     RectangleShape sprite;
     int speed;
     int score;
+    int life;
 };
 
 struct Enemy {
@@ -58,6 +59,7 @@ int main(void) {
     player.sprite.setFillColor(Color::Red); // 플레이어 색상
     player.speed = 5; // 플레이어 속도
     player.score = 0; // 플레이어 점수
+    player.life = 3; // 플레이어 목숨
 
     // 적(enemy)
     const int ENEMY_NUM = 10;
@@ -149,18 +151,22 @@ int main(void) {
                         enemy[i].explosion_sound.play();
                     }
                 }
+                // 적이 왼쪽 끝에 진입하려는 순간
+                else if (enemy[i].sprite.getPosition().x < 0) {
+                    player.life -= 1;
+                    enemy[i].life = 0;
+                }
                 enemy[i].sprite.move(enemy[i].speed, 0);
             }
         }
 
-        sprintf(info, "score: %d  time: %d", player.score, spent_time / 1000); // 실시간 점수 변경
+        sprintf(info, "life : %d score : %d  time : %d", player.life, player.score, spent_time / 1000); // 실시간 점수 변경
         text.setString(info);
 
         window.clear(Color::Black);//플레이어 자체 제거 (배경 지우기)
         window.draw(bg_sprite);
 
-        for (int i = 0; i < ENEMY_NUM; i++)
-        {
+        for (int i = 0; i < ENEMY_NUM; i++) {
             if (enemy[i].life > 0)  window.draw(enemy[i].sprite);//적 보여주기
         }
         //화면이 열려져 있는 동안 계속 그려야 함
