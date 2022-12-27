@@ -32,9 +32,10 @@ int main(void) {
 
     srand((time(0)));
     
-    long start_time = clock();      // 게임 시작시간
-    long spent_time;            // 게임 진행시간
-    
+    long start_time = clock(); // 게임 시작시간
+    long spent_time; // 게임 진행시간
+    int is_gameover = 0;
+
     // text
     Font font;
     font.loadFromFile("C:\\Windows\\Fonts\\Arial.ttf"); // C드라이브에 있는 폰트 가져오기
@@ -46,11 +47,19 @@ int main(void) {
     text.setFillColor(Color(255, 255, 255)); // RGB로 흰색 표현
     text.setPosition(0, 0); // 텍스트 위치 0,0
 
+    // 배경
     Texture bg_texture;
     bg_texture.loadFromFile("./resources/images/background.jpg");
     Sprite bg_sprite;
     bg_sprite.setTexture(bg_texture);
     bg_sprite.setPosition(0, 0);
+
+    // gameover
+    Texture gameover_texture;
+    gameover_texture.loadFromFile("./resources/images/gameover.jpg");
+    Sprite gameover_sprite;
+    gameover_sprite.setTexture(bg_texture);
+    gameover_sprite.setPosition(10, 0);
 
     // 플레이어
     struct Player player;
@@ -160,6 +169,10 @@ int main(void) {
             }
         }
 
+        if (player.life <= 0) {
+            is_gameover = 1;
+        }
+
         sprintf(info, "life : %d score : %d  time : %d", player.life, player.score, spent_time / 1000); // 실시간 점수 변경
         text.setString(info);
 
@@ -173,6 +186,10 @@ int main(void) {
         //draw는 나중에 호출할수록 우선순위가 높아짐
         window.draw(player.sprite);//플레이어 보여주기(그려주기)
         window.draw(text);
+
+        if (is_gameover) {
+            window.draw(gameover_sprite);
+        }
 
         window.display();
     }
