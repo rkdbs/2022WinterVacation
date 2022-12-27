@@ -45,8 +45,9 @@ int main(void) {
 	int player_score = 0; // 점수
 
 	// 적(enemy)
-	RectangleShape enemy[5];
-	int enemy_life[5];
+	int enemy_num = 7;
+	RectangleShape enemy[7];
+	int enemy_life[7];
 	int enemy_score = 100; // 적을 잡을 때 얻는 함수
 	SoundBuffer enemy_explosion_buffer;
 	enemy_explosion_buffer.loadFromFile("./resources/sounds/rumble.flac");
