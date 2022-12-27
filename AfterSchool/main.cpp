@@ -29,6 +29,13 @@ int main(void) {
 	char info[40];
 	text.setString("score");
 
+	// 배경
+	Texture bg_texture;
+	bg_texture.loadFromFile("./resources/images/background.jpg");
+	Sprite bg_sprite;
+	bg_sprite.setTexture(bg_texture);
+	bg_sprite.setPosition(0, 0);
+
 	// 플레이어
 	RectangleShape player;
 	player.setSize(Vector2f(40, 40));
@@ -113,6 +120,7 @@ int main(void) {
 		text.setString(info);
 
 		window.clear(Color::Black);
+		window.draw(bg_sprite);
 
 		// draw는 나중에 호출할수록 우선순위가 높아짐
 		for(int i=0; i<5; i++)
