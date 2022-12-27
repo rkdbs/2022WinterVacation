@@ -13,14 +13,26 @@ int main(void) {
 
 	srand(time(0));
 
+	Font font;
+	font.loadFromFile("C:\\Windows\\Fonts\\arial.ttf");
+
+	Text text;
+	text.setFont(font);
+	text.setCharacterSize(50); // 글자크기 조절
+	text.setFillColor(Color(255, 255, 255));
+	text.setPosition(0, 0);
+	text.setString("score");
+
 	RectangleShape player;
 	player.setSize(Vector2f(40, 40));
 	player.setPosition(100, 100); // 100, 100 기준으로 40 40 네모 그리기
 	player.setFillColor(Color::Red); // 색깔 Red로 교체
-	int player_speed = 5;
+	int player_speed = 5; // 속도
+	int player_score = 0; // 점수
 
 	RectangleShape enemy[5];
 	int enemy_life[5];
+	int enemy_score = 100; // 적을 잡을 때 얻는 함수
 	// enemy 초기화
 	for (int i = 0; i < 5; i++) {
 		enemy[i].setSize(Vector2f(70, 70));
@@ -48,6 +60,7 @@ int main(void) {
 							enemy[i].setPosition(rand() % 300 + 300, rand() % 480); // 300~599
 						}
 					}
+					break;
 				}
 			}
 		}
@@ -72,9 +85,12 @@ int main(void) {
 				if (player.getGlobalBounds().intersects(enemy[i].getGlobalBounds())) { // 겹치는 것이 있는지 판단
 					printf("enemy[%d]과 충돌\n", i);
 					enemy_life[i] -= 1;
+					player_score += enemy_score;
 				}
 			}
 		}
+
+		printf("score : %d\n", player_score);
 
 		window.clear(Color::Black);
 
@@ -83,6 +99,7 @@ int main(void) {
 			if(enemy_life[i] > 0)
 				window.draw(enemy[i]);
 		window.draw(player);
+		window.draw(text);
 
 		window.display();
 	}
