@@ -187,10 +187,8 @@ int main(void) {
          }
         
          if (enemy[i].life > 0) {
-             // TODO : 총알이 관통하는 버그를 수정할 것
-             // enemy와의 충돌
-             if (is_collide(player.sprite, enemy[i].sprite)
-                 || is_collide(bullet.sprite, enemy[i].sprite)) { // intersects : 플레이어와 적 사이에서 교집합이 있는가
+             // player, enemy 충돌
+             if (is_collide(player.sprite, enemy[i].sprite)) { // intersects : 플레이어와 적 사이에서 교집합이 있는가
                     enemy[i].life -= 1; // 적의 생명 줄이기
                     player.score += enemy[i].score;
 
@@ -204,7 +202,19 @@ int main(void) {
                     player.life -= 1;
                     enemy[i].life = 0;
                 }
-                enemy[i].sprite.move(enemy[i].speed, 0);
+                
+                // 총알과 enemy의 충돌
+                 if (is_collide(bullet.sprite, enemy[i].sprite)) {
+                     enemy[i].life -= 1;
+                     player.score += enemy[i].score;
+
+                     // TODO 코드 : refactoring 필요
+                     if (enemy[i].life == 0) {
+                         enemy[i].explosion_sound.play();
+                     }
+                     bullet.is_fired = 0;
+                 }
+                 enemy[i].sprite.move(enemy[i].speed, 0);
             }
         }
         
@@ -232,8 +242,9 @@ int main(void) {
                 window.draw(enemy[i].sprite); // 적 보여주기
         window.draw(player.sprite); // 플레이어 보여주기(그려주기)
         window.draw(text);
-        if (bullet.is_fired)
+        if (bullet.is_fired) {
             window.draw(bullet.sprite);
+        }
         window.draw(bullet.sprite);
 
         if (is_gameover) {
