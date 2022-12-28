@@ -182,8 +182,10 @@ int main(void) {
          }
         
          if (enemy[i].life > 0) {
+             // TODO : 총알이 관통하는 버그를 수정할 것
              // enemy와의 충돌
-             if (player.sprite.getGlobalBounds().intersects(enemy[i].sprite.getGlobalBounds())) { // intersects : 플레이어와 적 사이에서 교집합이 있는가
+             if (player.sprite.getGlobalBounds().intersects(enemy[i].sprite.getGlobalBounds())
+                 || bullet.sprite.getGlobalBounds().intersects(enemy[i].sprite.getGlobalBounds())) { // intersects : 플레이어와 적 사이에서 교집합이 있는가
                     printf("enemy[%d]와의 충돌\n", i);
                     enemy[i].life -= 1; // 적의 생명 줄이기
                     player.score += enemy[i].score;
