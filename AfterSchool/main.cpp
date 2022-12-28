@@ -11,6 +11,14 @@ struct Player {
     int speed;
     int score;
     int life;
+    float x, y; // 플레이어 좌표
+};
+
+// 총알
+struct Bullet {
+    RectangleShape sprite;
+    int speed;
+    int is_fired;
 };
 
 struct Enemy {
@@ -78,10 +86,19 @@ int main(void) {
     struct Player player;
     player.sprite.setSize(Vector2f(40, 40)); // 플레이어 사이즈
     player.sprite.setPosition(100, 100); // 플레이어 시작 위치
+    player.x = player.sprite.getPosition().x;
+    player.y = player.sprite.getPosition().y;
     player.sprite.setFillColor(Color::Red); // 플레이어 색상
     player.speed = 5; // 플레이어 속도
     player.score = 0; // 플레이어 점수
     player.life = 10; // 플레이어 목숨
+
+    // 총알
+    struct Bullet bullet;
+    bullet.sprite.setSize(Vector2f(10, 10));
+    bullet.sprite.setPosition(player.x + 50, player.y + 15); // 임시 테스트
+    bullet.speed = 20;
+    bullet.is_fired = 0;
 
     // 적(enemy)
     struct Enemy enemy[ENEMY_NUM];
@@ -190,6 +207,7 @@ int main(void) {
                 window.draw(enemy[i].sprite); //적 보여주기
         window.draw(player.sprite); //플레이어 보여주기(그려주기)
         window.draw(text);
+        window.draw(bullet.sprite);
 
         if (is_gameover) {
             // TODO : 게임이 멈추는 것을 구현할 것
