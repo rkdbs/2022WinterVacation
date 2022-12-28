@@ -32,6 +32,11 @@ struct Enemy {
     int respawn_time;
 };
 
+// obj1과 obj2 충돌여부
+int is_collide(RectangleShape obj1, RectangleShape obj2) {
+    return obj1.getGlobalBounds().intersects(obj2.getGlobalBounds());
+}
+
 // 전역변수
 const int ENEMY_NUM = 7;
 const int W_WIDTH = 1200, W_HEIGHT = 600; // 창의 크기
@@ -184,9 +189,8 @@ int main(void) {
          if (enemy[i].life > 0) {
              // TODO : 총알이 관통하는 버그를 수정할 것
              // enemy와의 충돌
-             if (player.sprite.getGlobalBounds().intersects(enemy[i].sprite.getGlobalBounds())
-                 || bullet.sprite.getGlobalBounds().intersects(enemy[i].sprite.getGlobalBounds())) { // intersects : 플레이어와 적 사이에서 교집합이 있는가
-                    printf("enemy[%d]와의 충돌\n", i);
+             if (is_collide(player.sprite, enemy[i].sprite)
+                 || is_collide(bullet.sprite, enemy[i].sprite)) { // intersects : 플레이어와 적 사이에서 교집합이 있는가
                     enemy[i].life -= 1; // 적의 생명 줄이기
                     player.score += enemy[i].score;
 
@@ -209,7 +213,6 @@ int main(void) {
             bullet.sprite.move(bullet.speed, 0);
             if (bullet.sprite.getPosition().x > W_WIDTH)
                 bullet.is_fired = 0;
-
         }
 
         if (player.life <= 0) {
