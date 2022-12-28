@@ -59,7 +59,7 @@ int main(void) {
     gameover_texture.loadFromFile("./resources/images/gameover.jpg");
     Sprite gameover_sprite;
     gameover_sprite.setTexture(bg_texture);
-    gameover_sprite.setPosition(10, 0);
+    gameover_sprite.setPosition((640/320)/2, (480-240)/2);
 
     // 플레이어
     struct Player player;
