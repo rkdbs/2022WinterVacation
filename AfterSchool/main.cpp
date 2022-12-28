@@ -201,7 +201,8 @@ int main(void) {
                 enemy[i].sprite.move(enemy[i].speed, 0);
             }
         }
-
+        
+        // TODO : 총알이 평생 한 번만 발사되는 버그를 수정하기
         if (bullet.is_fired) {
             bullet.sprite.move(bullet.speed, 0);
         }
