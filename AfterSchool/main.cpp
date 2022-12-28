@@ -20,6 +20,7 @@ struct Enemy {
     int score;
     SoundBuffer explosion_buffer;
     Sound explosion_sound;
+    int respawn_time;
 };
 
 // 전역변수
@@ -39,6 +40,14 @@ int main(void) {
     long start_time = clock(); // 게임 시작시간
     long spent_time; // 게임 진행시간
     int is_gameover = 0;
+
+    // BGM
+    SoundBuffer BGM_buffer;
+    BGM_buffer.loadFromFile("./resources/sounds/bgm.ogg");
+    Sound BGM_sound;
+    BGM_sound.setBuffer(BGM_buffer);
+    BGM_sound.setLoop(1); // BGM 무한반복
+    BGM_sound.play();
 
     // text
     Font font;
@@ -83,7 +92,7 @@ int main(void) {
         enemy[i].explosion_buffer.loadFromFile("./resources/sounds/rumble.flac");
         enemy[i].explosion_sound.setBuffer(enemy[i].explosion_buffer);
         enemy[i].score = 100;
-        enemy[i].respawn_time = 0;
+        enemy[i].respawn_time = 7;
 
         enemy[i].sprite.setSize(Vector2f(70, 70));
         enemy[i].sprite.setFillColor(Color::Yellow); // 적 색상
@@ -91,7 +100,6 @@ int main(void) {
         enemy[i].life = 1;
         enemy[i].speed = -(rand() % 10 + 1);
     }
-
 
     // 윈도우가 열려있을 때까지 반복, 유지 시키는 방법은? -> 무한 반복
     while (window.isOpen()) { //윈도우창이 열려있는 동안 계속 반복
@@ -127,31 +135,26 @@ int main(void) {
         player.sprite.move(0, -1 * player.speed); // 위쪽 이동
     }
     if (Keyboard::isKeyPressed(Keyboard::Down)) {
-         player.sprite.move(0, player.speed); // 아래쪽 이동
+        player.sprite.move(0, player.speed); // 아래쪽 이동
     }
-    if (Keyboard::isKeyPressed(Keyboard:Right))
-        {
-            player.sprite.move(player.speed, 0); // 오른쪽 이동
-        } // 방향기 end
+    if (Keyboard::isKeyPressed(Keyboard::Right)) {
+        player.sprite.move(player.speed, 0); // 오른쪽 이동
+    } // 방향기 end
 
-        printf("spent_time %d\n", spent_time % (1000 * 10));
-        for (int i = 0; i < ENEMY_NUM; i++)
-        {
-            // 10초마다 enemy가 젠
-            if (spent_time % (1000*enemy[i].respawn_time) < 100 / 60 + 1 {
-                enemy[i].sprite.setSize(Vector2f(70, 70));
-                enemy[i].sprite.setFillColor(Color::Yellow);//적 색상
-                enemy[i].sprite.setPosition(rand() % 300 + 300, rand() % 410);
-                enemy[i].life = 1;
-                // 10초마다 enemy의 속도 +1
-                enemy[i].speed = -(rand() % 10 + 1 + (spent_time/1000/enemy[i].respwan_time));
-            }
-
-            if (enemy[i].life > 0)
-            {
-                // enemy와의 충돌
-                if (player.sprite.getGlobalBounds().intersects(enemy[i].sprite.getGlobalBounds())) // intersects : 플레이어와 적 사이에서 교집합이 있는가
-                {
+    for (int i = 0; i < ENEMY_NUM; i++) {
+         // 10초마다 enemy가 젠
+         if (spent_time % (1000*enemy[i].respawn_time) < 100 / 60 + 1) {
+             enemy[i].sprite.setSize(Vector2f(70, 70));
+             enemy[i].sprite.setFillColor(Color::Yellow);//적 색상
+             enemy[i].sprite.setPosition(rand() % 300 + 300, rand() % 410);
+             enemy[i].life = 1;
+             // 10초마다 enemy의 속도 +1
+             enemy[i].speed = -(rand() % 10 + 1 + (spent_time/1000/enemy[i].respawn_time));
+         }
+        
+         if (enemy[i].life > 0) {
+             // enemy와의 충돌
+             if (player.sprite.getGlobalBounds().intersects(enemy[i].sprite.getGlobalBounds())) { // intersects : 플레이어와 적 사이에서 교집합이 있는가
                     printf("enemy[%d]와의 충돌\n", i);
                     enemy[i].life -= 1;//적의 생명 줄이기
                     player.score += enemy[i].score;
@@ -178,16 +181,18 @@ int main(void) {
         text.setString(info);
 
         window.clear(Color::Black);//플레이어 자체 제거 (배경 지우기)
+
         //화면이 열려져 있는 동안 계속 그려야 함
         //draw는 나중에 호출할수록 우선순위가 높아짐
         window.draw(bg_sprite);
         for (int i = 0; i < ENEMY_NUM; i++)
             if (enemy[i].life > 0)
-                window.draw(enemy[i].sprite);//적 보여주기
-        window.draw(player.sprite);//플레이어 보여주기(그려주기)
+                window.draw(enemy[i].sprite); //적 보여주기
+        window.draw(player.sprite); //플레이어 보여주기(그려주기)
         window.draw(text);
 
         if (is_gameover) {
+            // TODO : 게임이 멈추는 것을 구현할 것
             window.draw(gameover_sprite);
         }
 

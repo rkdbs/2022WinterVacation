@@ -5,7 +5,12 @@ VisualStudioVersion = 17.1.32228.430
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "AfterSchool", "AfterSchool\AfterSchool.vcxproj", "{20A5475B-7804-49EE-9905-31353B0E90A3}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Mo", "Mo\Mo.vcxproj", "{949AFA57-5DAB-4240-907C-68672C1EF0DA}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Moonbub", "Mo\Mo.vcxproj", "{949AFA57-5DAB-4240-907C-68672C1EF0DA}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{2CDD05ED-CCBD-4C07-BC65-58929A7081E6}"
+	ProjectSection(SolutionItems) = preProject
+		README.md = README.md
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
