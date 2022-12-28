@@ -145,8 +145,8 @@ int main(void) {
          // 10초마다 enemy가 젠
          if (spent_time % (1000*enemy[i].respawn_time) < 100 / 60 + 1) {
              enemy[i].sprite.setSize(Vector2f(70, 70));
-             enemy[i].sprite.setFillColor(Color::Yellow);//적 색상
-             enemy[i].sprite.setPosition(rand() % 300 + 300, rand() % 410);
+             enemy[i].sprite.setFillColor(Color::Yellow); // 적 색상
+             enemy[i].sprite.setPosition(rand() % 300 + W_WIDTH, rand() % 380);
              enemy[i].life = 1;
              // 10초마다 enemy의 속도 +1
              enemy[i].speed = -(rand() % 10 + 1 + (spent_time/1000/enemy[i].respawn_time));
@@ -156,10 +156,10 @@ int main(void) {
              // enemy와의 충돌
              if (player.sprite.getGlobalBounds().intersects(enemy[i].sprite.getGlobalBounds())) { // intersects : 플레이어와 적 사이에서 교집합이 있는가
                     printf("enemy[%d]와의 충돌\n", i);
-                    enemy[i].life -= 1;//적의 생명 줄이기
+                    enemy[i].life -= 1; // 적의 생명 줄이기
                     player.score += enemy[i].score;
 
-                    //TODO : 코드 refactoring 필요
+                    // TODO : 코드 refactoring 필요
                     if (enemy[i].life == 0) {
                         enemy[i].explosion_sound.play();
                     }
