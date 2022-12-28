@@ -19,6 +19,7 @@ struct Bullet {
     RectangleShape sprite;
     int speed;
     int is_fired;
+    int move;
 };
 
 struct Enemy {
@@ -128,25 +129,27 @@ int main(void) {
                 window.close(); // 윈도우창이 닫힘
                 break;
                 // 키보드를 눌렀을 때 
-            case Event::KeyPressed: { // case문 안에 변수를 선언할 때에는 중괄호를 쳐야 함
-                if (event.key.code == Keyboard::Space) { // space키 누르면 모든 enemy 다시 출현
-                    for (int i = 0; i < 7; i++) {
-                        enemy[i].sprite.setSize(Vector2f(70, 70));
-                        enemy[i].sprite.setFillColor(Color::Yellow); //적 색상
-                        enemy[i].sprite.setPosition(rand() % 300 + 500, rand() % 380);
-                        enemy[i].life = 1;
-                        enemy[i].speed = -(rand() % 10 + 1);
-                    }
-                }
-            }
+            //case Event::KeyPressed: { // case문 안에 변수를 선언할 때에는 중괄호를 쳐야 함
+            //    if (event.key.code == Keyboard::Space) { // space키 누르면 모든 enemy 다시 출현
+            //        for (int i = 0; i < 7; i++) {
+            //            enemy[i].sprite.setSize(Vector2f(70, 70));
+            //            enemy[i].sprite.setFillColor(Color::Yellow); //적 색상
+            //            enemy[i].sprite.setPosition(rand() % 300 + 500, rand() % 380);
+            //            enemy[i].life = 1;
+            //            enemy[i].speed = -(rand() % 10 + 1);
+            //        }
+            //    }
+            //}
             break;
         }
     }
     spent_time = clock() - start_time;
+    player.x = player.sprite.getPosition().x;
+    player.y = player.sprite.getPosition().y;
 
     // 방향키 start
     if (Keyboard::isKeyPressed(Keyboard::Left)) {
-        player.sprite.move(-1 * player.speed, 0); // 왼쪽 이동
+        player.sprite.move(-1 * player.speed, 0); // 왼쪽 이동  
     }
     if (Keyboard::isKeyPressed(Keyboard::Up)) {
         player.sprite.move(0, -1 * player.speed); // 위쪽 이동
@@ -157,6 +160,15 @@ int main(void) {
     if (Keyboard::isKeyPressed(Keyboard::Right)) {
         player.sprite.move(player.speed, 0); // 오른쪽 이동
     } // 방향기 end
+
+    // 총알 발사
+    if (Keyboard::isKeyPressed(Keyboard::Space)) {
+        // 총알이 발사되어있지 않다면
+        if (!bullet.is_fired) {
+            bullet.sprite.setPosition(player.x + 50, player.y + 15);
+            bullet.is_fired = 1;
+        }
+    }
 
     for (int i = 0; i < ENEMY_NUM; i++) {
          // 10초마다 enemy가 젠
@@ -190,6 +202,10 @@ int main(void) {
             }
         }
 
+        if (bullet.is_fired) {
+            bullet.sprite.move(bullet.speed, 0);
+        }
+
         if (player.life <= 0) {
             is_gameover = 1;
         }
@@ -197,16 +213,18 @@ int main(void) {
         sprintf(info, "life : %d score : %d  time : %d", player.life, player.score, spent_time / 1000); // 실시간 점수 변경
         text.setString(info);
 
-        window.clear(Color::Black);//플레이어 자체 제거 (배경 지우기)
+        window.clear(Color::Black); // 플레이어 자체 제거 (배경 지우기)
 
-        //화면이 열려져 있는 동안 계속 그려야 함
-        //draw는 나중에 호출할수록 우선순위가 높아짐
+        // 화면이 열려져 있는 동안 계속 그려야 함
+        // draw는 나중에 호출할수록 우선순위가 높아짐
         window.draw(bg_sprite);
         for (int i = 0; i < ENEMY_NUM; i++)
             if (enemy[i].life > 0)
-                window.draw(enemy[i].sprite); //적 보여주기
-        window.draw(player.sprite); //플레이어 보여주기(그려주기)
+                window.draw(enemy[i].sprite); // 적 보여주기
+        window.draw(player.sprite); // 플레이어 보여주기(그려주기)
         window.draw(text);
+        if (bullet.is_fired)
+            window.draw(bullet.sprite);
         window.draw(bullet.sprite);
 
         if (is_gameover) {
