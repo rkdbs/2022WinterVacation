@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <SFML/Audio.hpp>//SoundBuffer 사용
+#include <SFML/Audio.hpp> // SoundBuffer 사용
 #include <time.h>
 #include <SFML/Graphics.hpp>
 
@@ -32,6 +32,13 @@ struct Enemy {
     int respawn_time;
 };
 
+struct Textures {
+    Texture bg; // 배경 이미지
+    Texture enemy; // 적 이미지
+    Texture gameover; // 게임오버 이미지
+    Texture player; // 플레이어 이미지
+};
+
 // obj1과 obj2 충돌여부
 int is_collide(RectangleShape obj1, RectangleShape obj2) {
     return obj1.getGlobalBounds().intersects(obj2.getGlobalBounds());
@@ -43,6 +50,11 @@ const int W_WIDTH = 1200, W_HEIGHT = 600; // 창의 크기
 const int GO_WIDTH = 320, GO_HEIGHT = 240; // 게임오버 그림의 크기
 
 int main(void) {
+    struct Textures t;
+    t.bg.loadFromFile("./resources/images/background.jpg");
+    t.enemy.loadFromFile("./resources/images/enemy.png");
+    t.gameover.loadFromFile("./resources/images/gameover.jpg");
+    t.player.loadFromFile("./resources/images/earth.png");
 
     // 640 x 480 윈도우창 생성
     // 잠깐 떴다가 사라지는 건 return 0때문에 프로그램이 종료된 것
@@ -75,26 +87,22 @@ int main(void) {
     text.setPosition(0, 0); // 텍스트 위치 0,0
 
     // 배경
-    Texture bg_texture;
-    bg_texture.loadFromFile("./resources/images/background.jpg");
     Sprite bg_sprite;
-    bg_sprite.setTexture(bg_texture);
+    bg_sprite.setTexture(t.bg);
     bg_sprite.setPosition(0, 0);
 
     // gameover
-    Texture gameover_texture;
-    gameover_texture.loadFromFile("./resources/images/gameover.jpg");
     Sprite gameover_sprite;
-    gameover_sprite.setTexture(gameover_texture);
+    gameover_sprite.setTexture(t.gameover);
     gameover_sprite.setPosition((W_WIDTH - GO_WIDTH)/2, (W_HEIGHT - GO_HEIGHT)/2);
 
     // 플레이어
     struct Player player;
-    player.sprite.setSize(Vector2f(40, 40)); // 플레이어 사이즈
+    player.sprite.setTexture(&t.player); // 주소값을 받기 위해 &
     player.sprite.setPosition(100, 100); // 플레이어 시작 위치
+    player.sprite.setSize(Vector2f(100, 100));
     player.x = player.sprite.getPosition().x;
     player.y = player.sprite.getPosition().y;
-    player.sprite.setFillColor(Color::Red); // 플레이어 색상
     player.speed = 5; // 플레이어 속도
     player.score = 0; // 플레이어 점수
     player.life = 10; // 플레이어 목숨
@@ -117,7 +125,9 @@ int main(void) {
         enemy[i].score = 100;
         enemy[i].respawn_time = 7;
 
+        enemy[i].sprite.setTexture(&t.enemy);
         enemy[i].sprite.setSize(Vector2f(70, 70));
+        enemy[i].sprite.setScale(-1, 1); // 좌우대칭
         enemy[i].sprite.setFillColor(Color::Yellow); // 적 색상
         enemy[i].sprite.setPosition(rand() % 300 + W_WIDTH * 0.9, rand() % 380);
         enemy[i].life = 1;
