@@ -69,7 +69,7 @@ int main(void) {
     struct Textures t;
     t.bg.loadFromFile("./resources/images/background.jpg");
     t.enemy.loadFromFile("./resources/images/enemy.png");
-    t.gameover.loadFromFile("./resources/images/gameover.jpg");
+    t.gameover.loadFromFile("./resources/images/gameover.png");
     t.item_delay.loadFromFile("./resources/images/item_delay.png");
     t.item_speed.loadFromFile("./resources/images/star.png");
     t.player.loadFromFile("./resources/images/earth.png");
@@ -252,13 +252,15 @@ int main(void) {
     /* Enemy update */
     for (int i = 0; i < ENEMY_NUM; i++) {
          // 10초마다 enemy가 젠
-         if (spent_time % (1000 * enemy_respwan_time) < 100 / 60 + 1) { /* */
-             enemy[i].sprite.setSize(Vector2f(70, 70));
-             enemy[i].sprite.setFillColor(Color::Yellow); // 적 색상
-             enemy[i].sprite.setPosition(rand() % 300 + W_WIDTH, rand() % 380); /* */
-             enemy[i].life = 1;
-             // 10초마다 enemy의 속도 +1
-             enemy[i].speed = -(rand() % 10 + 1 + (spent_time/1000/ enemy_respwan_time));
+         if (spent_time % (1000 * enemy_respwan_time) < 1000 / 60 + 1) {
+             // 게임이 진행중일 때만 적을 리스폰 시키겠다.
+             if (!is_gameover) {
+                 enemy[i].sprite.setSize(Vector2f(70, 70));
+                 enemy[i].sprite.setPosition(rand() % 300 + W_WIDTH * 0.9 , rand() % 380);
+                 enemy[i].life = 1;
+                 // 10초마다 enemy의 속도 + 1
+                 enemy[i].speed = -(rand() % 10 + 1 + (spent_time/1000/ enemy_respwan_time));
+             }
          }
         
          if (enemy[i].life > 0) {
