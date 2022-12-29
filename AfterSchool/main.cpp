@@ -32,10 +32,6 @@ struct Enemy {
     RectangleShape sprite;
     int speed;
     int life;
-    int score;
-    SoundBuffer explosion_buffer;
-    Sound explosion_sound;
-    int respawn_time;
 };
 
 struct Item {
@@ -51,6 +47,11 @@ struct Textures {
     Texture item_delay; // 공속 아이템 이미지
     Texture item_speed; // 이속 아이템 이미지
     Texture player; // 플레이어 이미지
+};
+
+struct SButters {
+    SoundBuffer BGM;
+    SoundBuffer rumble;
 };
 
 // obj1과 obj2 충돌여부
@@ -73,6 +74,10 @@ int main(void) {
     t.item_speed.loadFromFile("./resources/images/star.png");
     t.player.loadFromFile("./resources/images/earth.png");
 
+    struct SButters sb;
+    sb.BGM.loadFromFile("./resources/sounds/bgm.ogg");
+    sb.rumble.loadFromFile("./resources/sounds/rumble.flac");
+
     // 640 x 480 윈도우창 생성
     // 잠깐 떴다가 사라지는 건 return 0때문에 프로그램이 종료된 것
     RenderWindow window(VideoMode(W_WIDTH, W_HEIGHT), "AfterSchool");
@@ -86,10 +91,9 @@ int main(void) {
     int is_gameover = 0;
 
     // BGM
-    SoundBuffer BGM_buffer;
-    BGM_buffer.loadFromFile("./resources/sounds/bgm.ogg");
     Sound BGM_sound;
-    BGM_sound.setBuffer(BGM_buffer);
+    BGM_sound.setBuffer(sb.BGM);
+    BGM_sound.setVolume(80); // BGM 소리 줄이기 (기본값 100)
     BGM_sound.setLoop(1); // BGM 무한반복
     BGM_sound.play();
 
@@ -129,6 +133,8 @@ int main(void) {
     int bullet_speed = 20;
     int bullet_idx = 0;
     int bullet_delay = 500; // 딜레이 0.5초
+    Sound bullet_sound;
+    bullet_sound.setBuffer(sb.rumble);
 
     struct Bullet bullet[BULLET_NUM];
     for (int i = 0; i < BULLET_NUM; i++) {
@@ -138,19 +144,16 @@ int main(void) {
 
     // 적(enemy)
     struct Enemy enemy[ENEMY_NUM];
+    Sound enemy_explosion_sound;
+    enemy_explosion_sound.setBuffer(sb.rumble);
+    int enemy_score = 100;
+    int enemy_respwan_time = 8;
 
     // enemy 초기화
     for (int i = 0; i < ENEMY_NUM; i++) {
-        // TODO : 굉장히 비효율적인 코드
-        enemy[i].explosion_buffer.loadFromFile("./resources/sounds/rumble.flac");
-        enemy[i].explosion_sound.setBuffer(enemy[i].explosion_buffer);
-        enemy[i].score = 100;
-        enemy[i].respawn_time = 7;
-
         enemy[i].sprite.setTexture(&t.enemy);
         enemy[i].sprite.setSize(Vector2f(70, 70));
         enemy[i].sprite.setScale(-1, 1); // 좌우대칭
-        enemy[i].sprite.setFillColor(Color::Yellow); // 적 색상
         enemy[i].sprite.setPosition(rand() % 300 + W_WIDTH * 0.9, rand() % 380);
         enemy[i].life = 1;
         enemy[i].speed = -(rand() % 10 + 1);
@@ -233,6 +236,7 @@ int main(void) {
                 bullet[bullet_idx].is_fired = 1;
                 bullet_idx++; // 다음 총알이 발사할 수 있도록
                 bullet_idx = bullet_idx % BULLET_NUM;
+                bullet_sound.play();
                 fired_time = spent_time; // 총알 장전
             }
         }
@@ -248,24 +252,24 @@ int main(void) {
     /* Enemy update */
     for (int i = 0; i < ENEMY_NUM; i++) {
          // 10초마다 enemy가 젠
-         if (spent_time % (1000*enemy[i].respawn_time) < 100 / 60 + 1) { /* */
+         if (spent_time % (1000 * enemy_respwan_time) < 100 / 60 + 1) { /* */
              enemy[i].sprite.setSize(Vector2f(70, 70));
              enemy[i].sprite.setFillColor(Color::Yellow); // 적 색상
              enemy[i].sprite.setPosition(rand() % 300 + W_WIDTH, rand() % 380); /* */
              enemy[i].life = 1;
              // 10초마다 enemy의 속도 +1
-             enemy[i].speed = -(rand() % 10 + 1 + (spent_time/1000/enemy[i].respawn_time));
+             enemy[i].speed = -(rand() % 10 + 1 + (spent_time/1000/ enemy_respwan_time));
          }
         
          if (enemy[i].life > 0) {
              // player, enemy 충돌
              if (is_collide(player.sprite, enemy[i].sprite)) { // intersects : 플레이어와 적 사이에서 교집합이 있는가
                     enemy[i].life -= 1; // 적의 생명 줄이기
-                    player.score += enemy[i].score;
+                    player.score += enemy_score;
 
                     // TODO : 코드 refactoring 필요
                     if (enemy[i].life == 0) {
-                        enemy[i].explosion_sound.play();
+                        enemy_explosion_sound.play();
                     }
                 }
                 // 적이 왼쪽 끝에 진입하려는 순간
@@ -279,11 +283,10 @@ int main(void) {
                      if (is_collide(bullet[j].sprite, enemy[i].sprite)) {
                          if (bullet[j].is_fired) {
                              enemy[i].life -= 1;
-                             player.score += enemy[i].score;
+                             player.score += enemy_score;
 
-                             // TODO 코드 : refactoring 필요
                              if (enemy[i].life == 0) {
-                                 enemy[i].explosion_sound.play();
+                                 enemy_explosion_sound.play();
                              }
                              bullet[j].is_fired = 0;
                          }
