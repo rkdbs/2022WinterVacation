@@ -136,6 +136,10 @@ int main(void) {
 
     // 윈도우가 열려있을 때까지 반복, 유지 시키는 방법은? -> 무한 반복
     while (window.isOpen()) { //윈도우창이 열려있는 동안 계속 반복
+        spent_time = clock() - start_time;
+        player.x = player.sprite.getPosition().x;
+        player.y = player.sprite.getPosition().y;
+
         Event event; //이벤트 생성
         while (window.pollEvent(event)) { //이벤트가 발생. 이벤트가 발생해야 event 초기화가 됨
             switch (event.type) {
@@ -158,10 +162,13 @@ int main(void) {
             break;
         }
     }
-    spent_time = clock() - start_time;
-    player.x = player.sprite.getPosition().x;
-    player.y = player.sprite.getPosition().y;
 
+    /* game 상태 update */
+    if (player.life <= 0) {
+        is_gameover = 1;
+    }
+
+    /* Player update */
     // 방향키 start
     if (Keyboard::isKeyPressed(Keyboard::Left)) {
         player.sprite.move(-1 * player.speed, 0); // 왼쪽 이동  
@@ -176,6 +183,20 @@ int main(void) {
         player.sprite.move(player.speed, 0); // 오른쪽 이동
     } // 방향기 end
 
+    // Player 이동범위 제한
+    // TODO : 오른쪽 아래쪽 제한을 의도대로 고치기
+    if (player.x < 0)
+        player.sprite.setPosition(0, player.y);
+    else if (player.x > W_WIDTH)
+        player.sprite.setPosition(W_WIDTH, player.y);
+
+    if (player.y < 0)
+        player.sprite.setPosition(player.x, 0);
+    else if (player.y > W_HEIGHT)
+        player.sprite.setPosition(player.x, W_HEIGHT);
+    printf("%f, %f", player.x, player.y);
+
+    /* Bullet update */
     // 총알 발사
     if (Keyboard::isKeyPressed(Keyboard::Space)) {
         // 총알이 발사되어있지 않다면
@@ -184,7 +205,13 @@ int main(void) {
             bullet.is_fired = 1;
         }
     }
+    if (bullet.is_fired) {
+        bullet.sprite.move(bullet.speed, 0);
+        if (bullet.sprite.getPosition().x > W_WIDTH)
+            bullet.is_fired = 0;
+    }
 
+    // Enemy update
     for (int i = 0; i < ENEMY_NUM; i++) {
          // 10초마다 enemy가 젠
          if (spent_time % (1000*enemy[i].respawn_time) < 100 / 60 + 1) {
@@ -226,17 +253,6 @@ int main(void) {
                  }
                  enemy[i].sprite.move(enemy[i].speed, 0);
             }
-        }
-        
-        // TODO : 총알이 평생 한 번만 발사되는 버그를 수정하기
-        if (bullet.is_fired) {
-            bullet.sprite.move(bullet.speed, 0);
-            if (bullet.sprite.getPosition().x > W_WIDTH)
-                bullet.is_fired = 0;
-        }
-
-        if (player.life <= 0) {
-            is_gameover = 1;
         }
 
         sprintf(info, "life : %d score : %d  time : %d", player.life, player.score, spent_time / 1000); // 실시간 점수 변경

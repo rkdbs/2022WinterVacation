@@ -4,7 +4,7 @@
 리소스 출처
 
 배경사진 : <br>
-https://kr.freepik.com/free-photos-vectors/%EB%B0%A4%ED%95%98%EB%8A%98
+https://pixabay.com/ko/photos/%ed%95%98-%ec%88%98-%eb%b3%84-%eb%b0%a4%ed%95%98%eb%8a%98-2695569/
 
 BGM : <br>
 https://opengameart.org/content/lines-of-code
