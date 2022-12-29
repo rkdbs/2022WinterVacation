@@ -1,3 +1,11 @@
+/*
+* 
+* TODO list
+* 1) 아이템 : 속도증가, 데미지 증가
+* 2) 총알 시스템 개편
+* 3) sound effect 개선
+* 4) 총알 위치 체계적으로
+*/
 #include <stdio.h>
 #include <stdlib.h>
 #include <SFML/Audio.hpp> // SoundBuffer 사용
@@ -17,9 +25,7 @@ struct Player {
 // 총알
 struct Bullet {
     RectangleShape sprite;
-    int speed;
     int is_fired;
-    int move;
 };
 
 struct Enemy {
@@ -45,7 +51,8 @@ int is_collide(RectangleShape obj1, RectangleShape obj2) {
 }
 
 // 전역변수
-const int ENEMY_NUM = 7;
+const int ENEMY_NUM = 7; // enemy의 최대개수
+const int BULLET_NUM = 50; // bullet의 최대개수
 const int W_WIDTH = 1200, W_HEIGHT = 600; // 창의 크기
 const int GO_WIDTH = 320, GO_HEIGHT = 240; // 게임오버 그림의 크기
 
@@ -108,11 +115,14 @@ int main(void) {
     player.life = 10; // 플레이어 목숨
 
     // 총알
-    struct Bullet bullet;
-    bullet.sprite.setSize(Vector2f(10, 10));
-    bullet.sprite.setPosition(player.x + 50, player.y + 15); // 임시 테스트
-    bullet.speed = 20;
-    bullet.is_fired = 0;
+    int bullet_speed = 20;
+    int bullet_idx = 0;
+
+    struct Bullet bullet[BULLET_NUM];
+    for (int i = 0; i < BULLET_NUM; i++) {
+        bullet[i].sprite.setSize(Vector2f(10, 10));
+        bullet[i].sprite.setPosition(player.x + 50, player.y + 15); // 임시 테스트
+    }
 
     // 적(enemy)
     struct Enemy enemy[ENEMY_NUM];
@@ -193,21 +203,26 @@ int main(void) {
         player.sprite.setPosition(player.x, 0);
     else if (player.y > W_HEIGHT - 100) // 100(그림의 높이)
         player.sprite.setPosition(player.x, W_HEIGHT - 100);
-    // printf("%f, %f", player.x, player.y);
 
     /* Bullet update */
-    // 총알 발사
-    if (Keyboard::isKeyPressed(Keyboard::Space)) {
-        // 총알이 발사되어있지 않다면
-        if (!bullet.is_fired) {
-            bullet.sprite.setPosition(player.x + 50, player.y + 15);
-            bullet.is_fired = 1;
+    // 총알 발사 TODO : 50번 이후부터는 안나가는 버그 수정할 것
+    printf("bullet_idx %d\n", bullet_idx);
+    for (int i = 0; i < BULLET_NUM; i++) {
+        if (Keyboard::isKeyPressed(Keyboard::Space)) {
+            // 총알이 발사되어있지 않다면
+            if (!bullet[bullet_idx].is_fired) {
+                bullet[bullet_idx].sprite.setPosition(player.x + 50, player.y + 15);
+                bullet[bullet_idx].is_fired = 1;
+                bullet_idx++; // 다음 총알이 발사할 수 있도록
+            }
         }
-    }
-    if (bullet.is_fired) {
-        bullet.sprite.move(bullet.speed, 0);
-        if (bullet.sprite.getPosition().x > W_WIDTH)
-            bullet.is_fired = 0;
+        for (int i = 0; i < BULLET_NUM; i++) {
+            if (bullet[i].is_fired) {
+                bullet[i].sprite.move(bullet_speed, 0);
+                if (bullet[i].sprite.getPosition().x > W_WIDTH)
+                    bullet[i].is_fired = 0;
+            }
+        }
     }
 
     // Enemy update
@@ -240,17 +255,20 @@ int main(void) {
                 }
                 
                 // 총알과 enemy의 충돌
-                 if (is_collide(bullet.sprite, enemy[i].sprite)) {
-                     enemy[i].life -= 1;
-                     player.score += enemy[i].score;
+                for (int j = 0; j < BULLET_NUM; j++) {
+                     if (is_collide(bullet[j].sprite, enemy[i].sprite)) {
+                         if (bullet[j].is_fired) {
+                             enemy[i].life -= 1;
+                             player.score += enemy[i].score;
 
-                     // TODO 코드 : refactoring 필요
-                     if (enemy[i].life == 0) {
-                         enemy[i].explosion_sound.play();
+                             // TODO 코드 : refactoring 필요
+                             if (enemy[i].life == 0) {
+                                 enemy[i].explosion_sound.play();
+                             }
+                         }
                      }
-                     bullet.is_fired = 0;
-                 }
-                 enemy[i].sprite.move(enemy[i].speed, 0);
+                }
+                enemy[i].sprite.move(enemy[i].speed, 0);
             }
         }
 
@@ -267,10 +285,11 @@ int main(void) {
                 window.draw(enemy[i].sprite); // 적 보여주기
         window.draw(player.sprite); // 플레이어 보여주기(그려주기)
         window.draw(text);
-        if (bullet.is_fired) {
-            window.draw(bullet.sprite);
+        for (int i = 0; i < BULLET_NUM; i++) {
+            if (bullet[i].is_fired)
+                window.draw(bullet[i].sprite);
+            window.draw(bullet[i].sprite);
         }
-        window.draw(bullet.sprite);
 
         if (is_gameover) {
             // TODO : 게임이 멈추는 것을 구현할 것
