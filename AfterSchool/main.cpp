@@ -38,10 +38,18 @@ struct Enemy {
     int respawn_time;
 };
 
+struct Item {
+    RectangleShape sprite;
+    int delay;
+    int is_presented; // 아이템이 떴는지?
+};
+
 struct Textures {
     Texture bg; // 배경 이미지
     Texture enemy; // 적 이미지
     Texture gameover; // 게임오버 이미지
+    Texture item_delay; // 공속 아이템 이미지
+    Texture item_speed; // 이속 아이템 이미지
     Texture player; // 플레이어 이미지
 };
 
@@ -61,6 +69,8 @@ int main(void) {
     t.bg.loadFromFile("./resources/images/background.jpg");
     t.enemy.loadFromFile("./resources/images/enemy.png");
     t.gameover.loadFromFile("./resources/images/gameover.jpg");
+    t.item_delay.loadFromFile("./resources/images/item_delay.png");
+    t.item_speed.loadFromFile("./resources/images/star.png");
     t.player.loadFromFile("./resources/images/earth.png");
 
     // 640 x 480 윈도우창 생성
@@ -145,6 +155,13 @@ int main(void) {
         enemy[i].life = 1;
         enemy[i].speed = -(rand() % 10 + 1);
     }
+
+    // item
+    struct Item item[2];
+    item[0].sprite.setTexture(&t.item_speed);
+    item[0].delay = 25000; // 25초
+    item[0].sprite.setSize(Vector2f(50, 50));
+    item[0].is_presented = 1;
 
     // 윈도우가 열려있을 때까지 반복, 유지 시키는 방법은? -> 무한 반복
     while (window.isOpen()) { //윈도우창이 열려있는 동안 계속 반복
@@ -276,6 +293,11 @@ int main(void) {
             }
         }
 
+        // item update
+        if (item[0].is_presented) {
+            // TODO : 충돌시 아이템 효과를 주고 사라진다
+        }
+        
         sprintf(info, "life : %d score : %d  time : %d", player.life, player.score, spent_time / 1000); // 실시간 점수 변경
         text.setString(info);
 
@@ -287,6 +309,8 @@ int main(void) {
         for (int i = 0; i < ENEMY_NUM; i++)
             if (enemy[i].life > 0)
                 window.draw(enemy[i].sprite); // 적 보여주기
+        if (item[0].is_presented)
+            window.draw(item[0].sprite);
         window.draw(player.sprite); // 플레이어 보여주기(그려주기)
         window.draw(text);
         for (int i = 0; i < BULLET_NUM; i++) {
