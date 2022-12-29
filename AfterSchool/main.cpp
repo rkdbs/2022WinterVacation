@@ -99,7 +99,7 @@ int main(void) {
     // 플레이어
     struct Player player;
     player.sprite.setTexture(&t.player); // 주소값을 받기 위해 &
-    player.sprite.setPosition(100, 100); // 플레이어 시작 위치
+    player.sprite.setPosition(200, 200); // 플레이어 시작 위치
     player.sprite.setSize(Vector2f(100, 100));
     player.x = player.sprite.getPosition().x;
     player.y = player.sprite.getPosition().y;
@@ -184,17 +184,16 @@ int main(void) {
     } // 방향기 end
 
     // Player 이동범위 제한
-    // TODO : 오른쪽 아래쪽 제한을 의도대로 고치기
     if (player.x < 0)
         player.sprite.setPosition(0, player.y);
-    else if (player.x > W_WIDTH)
-        player.sprite.setPosition(W_WIDTH, player.y);
+    else if (player.x > W_WIDTH - 100) // 100(그림의 너비)
+        player.sprite.setPosition(W_WIDTH - 100, player.y);
 
     if (player.y < 0)
         player.sprite.setPosition(player.x, 0);
-    else if (player.y > W_HEIGHT)
-        player.sprite.setPosition(player.x, W_HEIGHT);
-    printf("%f, %f", player.x, player.y);
+    else if (player.y > W_HEIGHT - 100) // 100(그림의 높이)
+        player.sprite.setPosition(player.x, W_HEIGHT - 100);
+    // printf("%f, %f", player.x, player.y);
 
     /* Bullet update */
     // 총알 발사
