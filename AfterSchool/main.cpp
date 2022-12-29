@@ -72,6 +72,7 @@ int main(void) {
     
     long start_time = clock(); // 게임 시작시간
     long spent_time; // 게임 진행시간
+    long fired_time = 0; // 최근에 발사한 시간
     int is_gameover = 0;
 
     // BGM
@@ -117,6 +118,7 @@ int main(void) {
     // 총알
     int bullet_speed = 20;
     int bullet_idx = 0;
+    int bullet_delay = 500; // 딜레이 0.5초
 
     struct Bullet bullet[BULLET_NUM];
     for (int i = 0; i < BULLET_NUM; i++) {
@@ -207,31 +209,32 @@ int main(void) {
     /* Bullet update */
     // 총알 발사 TODO : 50번 이후부터는 안나가는 버그 수정할 것
     printf("bullet_idx %d\n", bullet_idx);
-    for (int i = 0; i < BULLET_NUM; i++) {
-        if (Keyboard::isKeyPressed(Keyboard::Space)) {
+    if (Keyboard::isKeyPressed(Keyboard::Space)) {
+        if (spent_time-fired_time > bullet_delay) {
             // 총알이 발사되어있지 않다면
             if (!bullet[bullet_idx].is_fired) {
                 bullet[bullet_idx].sprite.setPosition(player.x + 50, player.y + 15);
                 bullet[bullet_idx].is_fired = 1;
                 bullet_idx++; // 다음 총알이 발사할 수 있도록
-            }
-        }
-        for (int i = 0; i < BULLET_NUM; i++) {
-            if (bullet[i].is_fired) {
-                bullet[i].sprite.move(bullet_speed, 0);
-                if (bullet[i].sprite.getPosition().x > W_WIDTH)
-                    bullet[i].is_fired = 0;
+                fired_time = spent_time;
             }
         }
     }
+    for (int i = 0; i < BULLET_NUM; i++) {
+        if (bullet[i].is_fired) {
+            bullet[i].sprite.move(bullet_speed, 0);
+            if (bullet[i].sprite.getPosition().x > W_WIDTH)
+                bullet[i].is_fired = 0;
+        }
+    }
 
-    // Enemy update
+    /* Enemy update */
     for (int i = 0; i < ENEMY_NUM; i++) {
          // 10초마다 enemy가 젠
-         if (spent_time % (1000*enemy[i].respawn_time) < 100 / 60 + 1) {
+         if (spent_time % (1000*enemy[i].respawn_time) < 100 / 60 + 1) { /* */
              enemy[i].sprite.setSize(Vector2f(70, 70));
              enemy[i].sprite.setFillColor(Color::Yellow); // 적 색상
-             enemy[i].sprite.setPosition(rand() % 300 + W_WIDTH, rand() % 380);
+             enemy[i].sprite.setPosition(rand() % 300 + W_WIDTH, rand() % 380); /* */
              enemy[i].life = 1;
              // 10초마다 enemy의 속도 +1
              enemy[i].speed = -(rand() % 10 + 1 + (spent_time/1000/enemy[i].respawn_time));
@@ -265,6 +268,7 @@ int main(void) {
                              if (enemy[i].life == 0) {
                                  enemy[i].explosion_sound.play();
                              }
+                             bullet[j].is_fired = 0;
                          }
                      }
                 }
@@ -286,9 +290,9 @@ int main(void) {
         window.draw(player.sprite); // 플레이어 보여주기(그려주기)
         window.draw(text);
         for (int i = 0; i < BULLET_NUM; i++) {
-            if (bullet[i].is_fired)
+            if (bullet[i].is_fired) {
                 window.draw(bullet[i].sprite);
-            window.draw(bullet[i].sprite);
+            }
         }
 
         if (is_gameover) {
