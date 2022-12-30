@@ -17,6 +17,7 @@ using namespace sf;
 struct Player {
     RectangleShape sprite;
     int speed;
+    int speed_max;
     int score;
     int life;
     float x, y; // 플레이어 좌표
@@ -134,6 +135,7 @@ int main(void) {
     player.x = player.sprite.getPosition().x;
     player.y = player.sprite.getPosition().y;
     player.speed = 5; // 플레이어 속도
+    player.speed_max = 15;
     player.score = 0; // 플레이어 점수
     player.life = 10; // 플레이어 목숨
 
@@ -141,6 +143,7 @@ int main(void) {
     int bullet_speed = 20;
     int bullet_idx = 0;
     int bullet_delay = 500; // 딜레이 0.5초
+    int bullet_delay_max = 100;
     Sound bullet_sound;
     bullet_sound.setBuffer(sb.rumble);
 
@@ -326,9 +329,13 @@ int main(void) {
                     switch (item[i].type) {
                         case SPEED: // player 이동 속도
                             player.speed += 2;
+                            if (player.speed > player.speed_max)
+                                player.speed = player.speed_max;
                             break;
                         case DELAY: // 공격속도
                             bullet_delay -= 100;
+                            if (bullet_delay < bullet_delay_max)
+                                bullet_delay = bullet_delay_max;
                             break;
                     }
                     item[i].is_presented = 0;
