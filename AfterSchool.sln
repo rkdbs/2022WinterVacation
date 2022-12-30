@@ -12,6 +12,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		README.md = README.md
 	EndProjectSection
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "AfterSchool2", "AfterSchool2\AfterSchool2.vcxproj", "{F835F751-FE09-404F-A1D4-14F99D8E13C3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -36,9 +38,20 @@ Global
 		{949AFA57-5DAB-4240-907C-68672C1EF0DA}.Release|x64.Build.0 = Release|x64
 		{949AFA57-5DAB-4240-907C-68672C1EF0DA}.Release|x86.ActiveCfg = Release|Win32
 		{949AFA57-5DAB-4240-907C-68672C1EF0DA}.Release|x86.Build.0 = Release|Win32
+		{F835F751-FE09-404F-A1D4-14F99D8E13C3}.Debug|x64.ActiveCfg = Debug|x64
+		{F835F751-FE09-404F-A1D4-14F99D8E13C3}.Debug|x64.Build.0 = Debug|x64
+		{F835F751-FE09-404F-A1D4-14F99D8E13C3}.Debug|x86.ActiveCfg = Debug|Win32
+		{F835F751-FE09-404F-A1D4-14F99D8E13C3}.Debug|x86.Build.0 = Debug|Win32
+		{F835F751-FE09-404F-A1D4-14F99D8E13C3}.Release|x64.ActiveCfg = Release|x64
+		{F835F751-FE09-404F-A1D4-14F99D8E13C3}.Release|x64.Build.0 = Release|x64
+		{F835F751-FE09-404F-A1D4-14F99D8E13C3}.Release|x86.ActiveCfg = Release|Win32
+		{F835F751-FE09-404F-A1D4-14F99D8E13C3}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{F835F751-FE09-404F-A1D4-14F99D8E13C3} = {2CDD05ED-CCBD-4C07-BC65-58929A7081E6}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {7E51F444-280B-4F58-999E-BC47B9C2B1A6}

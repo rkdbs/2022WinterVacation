@@ -176,11 +176,11 @@ int main(void) {
     // item
     struct Item item[2];
     item[0].sprite.setTexture(&t.item_speed);
-    item[0].delay = 25000; // 25초
+    item[0].delay = 20000; // 20초
     item[0].type = SPEED;
     item[0].sound.setBuffer(sb.item_speed);
     item[1].sprite.setTexture(&t.item_delay);
-    item[1].delay = 20000;
+    item[1].delay = 15000; // 15초
     item[1].type = DELAY;
 
     for (int i = 0; i < ITEM_NUM; i++) {
@@ -214,81 +214,81 @@ int main(void) {
             //        }
             //    }
             //}
-            break;
-        }
-    }
-
-    /* game 상태 update */
-    if (player.life <= 0) {
-        is_gameover = 1;
-    }
-
-    /* Player update */
-    // 방향키 start
-    if (Keyboard::isKeyPressed(Keyboard::Left)) {
-        player.sprite.move(-1 * player.speed, 0); // 왼쪽 이동  
-    }
-    if (Keyboard::isKeyPressed(Keyboard::Up)) {
-        player.sprite.move(0, -1 * player.speed); // 위쪽 이동
-    }
-    if (Keyboard::isKeyPressed(Keyboard::Down)) {
-        player.sprite.move(0, player.speed); // 아래쪽 이동
-    }
-    if (Keyboard::isKeyPressed(Keyboard::Right)) {
-        player.sprite.move(player.speed, 0); // 오른쪽 이동
-    } // 방향기 end
-
-    // Player 이동범위 제한
-    if (player.x < 0)
-        player.sprite.setPosition(0, player.y);
-    else if (player.x > W_WIDTH - 100) // 100(그림의 너비)
-        player.sprite.setPosition(W_WIDTH - 100, player.y);
-
-    if (player.y < 0)
-        player.sprite.setPosition(player.x, 0);
-    else if (player.y > W_HEIGHT - 100) // 100(그림의 높이)
-        player.sprite.setPosition(player.x, W_HEIGHT - 100);
-
-    /* Bullet update */
-    printf("bullet_idx %d\n", bullet_idx);
-    if (Keyboard::isKeyPressed(Keyboard::Space)) {
-        if (spent_time-fired_time > bullet_delay) {
-            // 총알이 발사되어있지 않다면
-            if (!bullet[bullet_idx].is_fired) {
-                bullet[bullet_idx].sprite.setPosition(player.x + 50, player.y + 15);
-                bullet[bullet_idx].is_fired = 1;
-                bullet_idx++; // 다음 총알이 발사할 수 있도록
-                bullet_idx = bullet_idx % BULLET_NUM;
-                bullet_sound.play();
-                fired_time = spent_time; // 총알 장전
+                break;
             }
         }
-    }
-    for (int i = 0; i < BULLET_NUM; i++) {
-        if (bullet[i].is_fired) {
-            bullet[i].sprite.move(bullet_speed, 0);
-            if (bullet[i].sprite.getPosition().x > W_WIDTH)
-                bullet[i].is_fired = 0;
-        }
-    }
 
-    /* Enemy update */
-    for (int i = 0; i < ENEMY_NUM; i++) {
-         // 10초마다 enemy가 젠
-         if (spent_time % (1000 * enemy_respwan_time) < 1000 / 60 + 1) {
-             // 게임이 진행중일 때만 적을 리스폰 시키겠다.
-             if (!is_gameover) {
-                 enemy[i].sprite.setSize(Vector2f(70, 70));
-                 enemy[i].sprite.setPosition(rand() % 300 + W_WIDTH * 0.9 , rand() % 380);
-                 enemy[i].life = 1;
-                 // 10초마다 enemy의 속도 + 1
-                 enemy[i].speed = -(rand() % 10 + 1 + (spent_time/1000/ enemy_respwan_time));
-             }
-         }
-        
-         if (enemy[i].life > 0) {
-             // player, enemy 충돌
-             if (is_collide(player.sprite, enemy[i].sprite)) { // intersects : 플레이어와 적 사이에서 교집합이 있는가
+        /* game 상태 update */
+        if (player.life <= 0) {
+            is_gameover = 1;
+        }
+
+        /* Player update */
+        // 방향키 start
+        if (Keyboard::isKeyPressed(Keyboard::Left)) {
+            player.sprite.move(-1 * player.speed, 0); // 왼쪽 이동  
+        }
+        if (Keyboard::isKeyPressed(Keyboard::Up)) {
+            player.sprite.move(0, -1 * player.speed); // 위쪽 이동
+        }
+        if (Keyboard::isKeyPressed(Keyboard::Down)) {
+            player.sprite.move(0, player.speed); // 아래쪽 이동
+        }
+        if (Keyboard::isKeyPressed(Keyboard::Right)) {
+            player.sprite.move(player.speed, 0); // 오른쪽 이동
+        } // 방향기 end
+
+        // Player 이동범위 제한
+        if (player.x < 0)
+            player.sprite.setPosition(0, player.y);
+        else if (player.x > W_WIDTH - 100) // 100(그림의 너비)
+            player.sprite.setPosition(W_WIDTH - 100, player.y);
+
+        if (player.y < 0)
+            player.sprite.setPosition(player.x, 0);
+        else if (player.y > W_HEIGHT - 100) // 100(그림의 높이)
+            player.sprite.setPosition(player.x, W_HEIGHT - 100);
+
+        /* Bullet update */
+        printf("bullet_idx %d\n", bullet_idx);
+        if (Keyboard::isKeyPressed(Keyboard::Space)) {
+            if (spent_time - fired_time > bullet_delay) {
+                // 총알이 발사되어있지 않다면
+                if (!bullet[bullet_idx].is_fired) {
+                    bullet[bullet_idx].sprite.setPosition(player.x + 50, player.y + 15);
+                    bullet[bullet_idx].is_fired = 1;
+                    bullet_idx++; // 다음 총알이 발사할 수 있도록
+                    bullet_idx = bullet_idx % BULLET_NUM;
+                    bullet_sound.play();
+                    fired_time = spent_time; // 총알 장전
+                }
+            }
+        }
+        for (int i = 0; i < BULLET_NUM; i++) {
+            if (bullet[i].is_fired) {
+                bullet[i].sprite.move(bullet_speed, 0);
+                if (bullet[i].sprite.getPosition().x > W_WIDTH)
+                    bullet[i].is_fired = 0;
+            }
+        }
+
+        /* Enemy update */
+        for (int i = 0; i < ENEMY_NUM; i++) {
+            // 10초마다 enemy가 젠
+            if (spent_time % (1000 * enemy_respwan_time) < 1000 / 60 + 1) {
+                // 게임이 진행중일 때만 적을 리스폰 시키겠다.
+                if (!is_gameover) {
+                    enemy[i].sprite.setSize(Vector2f(70, 70));
+                    enemy[i].sprite.setPosition(rand() % 300 + W_WIDTH * 0.9, rand() % 380);
+                    enemy[i].life = 1;
+                    // 10초마다 enemy의 속도 + 1
+                    enemy[i].speed = -(rand() % 10 + 1 + (spent_time / 1000 / enemy_respwan_time));
+                }
+            }
+
+            if (enemy[i].life > 0) {
+                // player, enemy 충돌
+                if (is_collide(player.sprite, enemy[i].sprite)) { // intersects : 플레이어와 적 사이에서 교집합이 있는가
                     enemy[i].life -= 1; // 적의 생명 줄이기
                     player.score += enemy_score;
 
@@ -302,20 +302,20 @@ int main(void) {
                     player.life -= 1;
                     enemy[i].life = 0;
                 }
-                
+
                 // 총알과 enemy의 충돌
                 for (int j = 0; j < BULLET_NUM; j++) {
-                     if (is_collide(bullet[j].sprite, enemy[i].sprite)) {
-                         if (bullet[j].is_fired) {
-                             enemy[i].life -= 1;
-                             player.score += enemy_score;
+                    if (is_collide(bullet[j].sprite, enemy[i].sprite)) {
+                        if (bullet[j].is_fired) {
+                            enemy[i].life -= 1;
+                            player.score += enemy_score;
 
-                             if (enemy[i].life == 0) {
-                                 enemy_explosion_sound.play();
-                             }
-                             bullet[j].is_fired = 0;
-                         }
-                     }
+                            if (enemy[i].life == 0) {
+                                enemy_explosion_sound.play();
+                            }
+                            bullet[j].is_fired = 0;
+                        }
+                    }
                 }
                 enemy[i].sprite.move(enemy[i].speed, 0);
             }
@@ -331,16 +331,16 @@ int main(void) {
                 // 아이템 획득시 효과를 얻고 아이템이 사라진다
                 if (is_collide(player.sprite, item[i].sprite)) {
                     switch (item[i].type) {
-                        case SPEED: // player 이동 속도
-                            player.speed += 2;
-                            if (player.speed > player.speed_max)
-                                player.speed = player.speed_max;
-                            break;
-                        case DELAY: // 공격속도
-                            bullet_delay -= 100;
-                            if (bullet_delay < bullet_delay_max)
-                                bullet_delay = bullet_delay_max;
-                            break;
+                    case SPEED: // player 이동 속도
+                        player.speed += 2;
+                        if (player.speed > player.speed_max)
+                            player.speed = player.speed_max;
+                        break;
+                    case DELAY: // 공격속도
+                        bullet_delay -= 100;
+                        if (bullet_delay < bullet_delay_max)
+                            bullet_delay = bullet_delay_max;
+                        break;
                     }
                     item[i].is_presented = 0;
                     item[i].presented_time = spent_time;
@@ -348,7 +348,7 @@ int main(void) {
                 }
             }
         }
-        
+
         sprintf(info, "life : %d score : %d  time : %d", player.life, player.score, spent_time / 1000); // 실시간 점수 변경
         text.setString(info);
 
@@ -360,7 +360,7 @@ int main(void) {
         for (int i = 0; i < ENEMY_NUM; i++)
             if (enemy[i].life > 0)
                 window.draw(enemy[i].sprite); // 적 보여주기
-        for(int i=0; i<ITEM_NUM; i++)
+        for (int i = 0; i < ITEM_NUM; i++)
             if (item[i].is_presented)
                 window.draw(item[i].sprite);
 
