@@ -7,11 +7,14 @@
 using namespace sf;
 
 int main(void) {
-	
 	RenderWindow window(VideoMode(1200, 800), "AfterSchool2");
 	window.setFramerateLimit(60);
 
+	Vector2i mouse_pos; // i : 마우스 좌표(정수)
+
 	while (window.isOpen()) {
+		mouse_pos = Mouse::getPosition(window);
+
 		Event event;
 		while (window.pollEvent(event)) {
 			switch (event.type) {
@@ -20,6 +23,7 @@ int main(void) {
 				break;
 			}
 		}
+		printf("(%d, %d)\n", mouse_pos.x, mouse_pos.y);
 	}
 
 	return 0;
