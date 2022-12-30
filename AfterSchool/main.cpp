@@ -34,12 +34,17 @@ struct Enemy {
     int life;
 };
 
+enum item_type {
+    SPEED, // 0
+    DELAY // 1
+};
+
 struct Item {
     RectangleShape sprite;
     int delay;
     int is_presented; // 아이템이 떴는지?
     long presented_time;
-    int type;
+    enum item_type type;
 };
 
 struct Textures {
@@ -166,10 +171,10 @@ int main(void) {
     struct Item item[2];
     item[0].sprite.setTexture(&t.item_speed);
     item[0].delay = 25000; // 25초
-    item[0].type = 0;
+    item[0].type = SPEED;
     item[1].sprite.setTexture(&t.item_delay);
     item[1].delay = 20000;
-    item[1].type = 1;
+    item[1].type = DELAY;
 
     for (int i = 0; i < ITEM_NUM; i++) {
         item[i].sprite.setSize(Vector2f(50, 50));
@@ -319,10 +324,10 @@ int main(void) {
                 // TODO : 충돌시 아이템 효과를 주고 사라진다
                 if (is_collide(player.sprite, item[i].sprite)) {
                     switch (item[i].type) {
-                        case 0: // player 이동 속도
+                        case SPEED: // player 이동 속도
                             player.speed += 2;
                             break;
-                        case 1: // 공격속도
+                        case DELAY: // 공격속도
                             bullet_delay -= 100;
                             break;
                     }
