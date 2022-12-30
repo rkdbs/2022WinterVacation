@@ -11,6 +11,7 @@ const int S = 4;
 struct Card {
 	RectangleShape sprite;
 	int id;
+	int type;
 };
 
 int main(void) {
@@ -23,6 +24,17 @@ int main(void) {
 	Vector2i mouse_pos; // i : 마우스 좌표(정수)
 	int click_cnt = 0; // 마우스 누른 횟수
 
+	Texture t[8 + 1];
+	t[0].loadFromFile("./resources/images/back.jpg");
+	t[1].loadFromFile("./resources/images/ca0.jpg");
+	t[2].loadFromFile("./resources/images/ca1.jpg");
+	t[3].loadFromFile("./resources/images/ca2.jpg");
+	t[4].loadFromFile("./resources/images/ca3.jpg");
+	t[5].loadFromFile("./resources/images/ca4.jpg");
+	t[6].loadFromFile("./resources/images/ca5.jpg");
+	t[7].loadFromFile("./resources/images/ca6.jpg");
+	t[8].loadFromFile("./resources/images/ca7.jpg");
+
 	Font font;
 	font.loadFromFile("c:/Windows/Fonts/arial.ttf");
 
@@ -33,12 +45,16 @@ int main(void) {
 	text.setPosition(0, 0);
 	char info[40];
 
-	struct Card cards[5][5];
-	for (int i = 0; i < 5; i++) {
+	struct Card cards[S][S];
+	int n = 0;
+	for (int i = 0; i < S; i++) {
 		for (int j = 0; j < S; j++) {
 			cards[i][j].sprite.setSize(Vector2f(CARD_W, CARD_H));
 			cards[i][j].sprite.setPosition(j * CARD_W, i * CARD_H);
-			cards[i][j].sprite.setFillColor(Color(i * 120, j * 120, 0));
+			cards[i][j].sprite.setTexture(&t[1 + n / 2]);
+			cards[i][j].type = 1 + n / 2;
+			cards[i][j].id = n + 1;
+			n++;
 		}
 	}
 
