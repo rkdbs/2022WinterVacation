@@ -44,6 +44,7 @@ struct Item {
     RectangleShape sprite;
     int delay;
     int is_presented; // 아이템이 떴는지?
+    Sound sound;
     long presented_time;
     enum item_type type;
 };
@@ -60,6 +61,7 @@ struct Textures {
 struct SButters {
     SoundBuffer BGM;
     SoundBuffer rumble;
+    SoundBuffer item_speed;
 };
 
 // obj1과 obj2 충돌여부
@@ -85,6 +87,7 @@ int main(void) {
 
     struct SButters sb;
     sb.BGM.loadFromFile("./resources/sounds/bgm.ogg");
+    sb.item_speed.loadFromFile("./resources/sounds/speed.wav");
     sb.rumble.loadFromFile("./resources/sounds/rumble.flac");
 
     // 640 x 480 윈도우창 생성
@@ -175,6 +178,7 @@ int main(void) {
     item[0].sprite.setTexture(&t.item_speed);
     item[0].delay = 25000; // 25초
     item[0].type = SPEED;
+    item[0].sound.setBuffer(sb.item_speed);
     item[1].sprite.setTexture(&t.item_delay);
     item[1].delay = 20000;
     item[1].type = DELAY;
@@ -324,7 +328,7 @@ int main(void) {
                 }
             }
             if (item[i].is_presented) {
-                // TODO : 충돌시 아이템 효과를 주고 사라진다
+                // 아이템 획득시 효과를 얻고 아이템이 사라진다
                 if (is_collide(player.sprite, item[i].sprite)) {
                     switch (item[i].type) {
                         case SPEED: // player 이동 속도
@@ -340,6 +344,7 @@ int main(void) {
                     }
                     item[i].is_presented = 0;
                     item[i].presented_time = spent_time;
+                    item[i].sound.play();
                 }
             }
         }
