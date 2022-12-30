@@ -305,13 +305,11 @@ int main(void) {
                 enemy[i].sprite.move(enemy[i].speed, 0);
             }
         }
-
-        // item update TODO : item[1]이 안뜸
         for (int i = 0; i < ITEM_NUM; i++) {
-            if (!item[0].is_presented) {
-                if (spent_time - item[0].presented_time > item[0].delay) {
-                    item[0].sprite.setPosition(rand() % (W_WIDTH) * 0.8, (rand() % W_HEIGHT) * 0.8);
-                    item[0].is_presented = 1;
+            if (!item[i].is_presented) {
+                if (spent_time - item[i].presented_time > item[i].delay) {
+                    item[i].sprite.setPosition(rand() % (W_WIDTH) * 0.8, (rand() % W_HEIGHT) * 0.8);
+                    item[i].is_presented = 1;
                 }
             }
             if (item[0].is_presented) {
@@ -330,8 +328,10 @@ int main(void) {
         for (int i = 0; i < ENEMY_NUM; i++)
             if (enemy[i].life > 0)
                 window.draw(enemy[i].sprite); // 적 보여주기
-        if (item[0].is_presented)
-            window.draw(item[0].sprite);
+        for(int i=0; i<ITEM_NUM; i++)
+            if (item[i].is_presented)
+                window.draw(item[i].sprite);
+
         window.draw(player.sprite); // 플레이어 보여주기(그려주기)
         window.draw(text);
         for (int i = 0; i < BULLET_NUM; i++) {
