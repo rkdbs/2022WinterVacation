@@ -17,6 +17,12 @@ struct Card {
 	int is_cleared; // 정답을 맞춘 카드인지
 };
 
+void shuffle_card(struct Card* c1) {
+	struct Card temp = *c1;
+	*c1 = *c2;
+	*c2 = temp;
+}
+
 int main(void) {
 	int CARD_W = 200;
 	int CARD_H = 200;
