@@ -17,7 +17,7 @@ struct Card {
 	int is_cleared; // 정답을 맞춘 카드인지
 };
 
-void shuffle_card(struct Card* c1) {
+void swap_card(struct Card* c1, struct Card* c2) {
 	struct Card temp = *c1;
 	*c1 = *c2;
 	*c2 = temp;
@@ -67,11 +67,23 @@ int main(void) {
 			cards[i][j].sprite.setPosition(j * CARD_W, i * CARD_H);
 			cards[i][j].sprite.setTexture(&t[0]);
 			cards[i][j].type = 1 + n / 2;
-			cards[i][j].id_i = i;
-			cards[i][j].id_j = j;
 			cards[i][j].is_clicked = 0; 
 			cards[i][j].is_cleared = 0;
 			n++;
+		}
+	}
+
+	// 카드 100번 섞기
+	for (int i = 0; i < 100; i++) {
+		swap_card(&(cards[rand() % S][rand() % S]), &(cards[rand() % S][rand() % S])); // 순서는 바꾸지만 멤버변수 값 바꾸지 X
+	}
+
+	// idx에 맞춰서 id값 재조정
+	for (int i = 0; i < S; i++) {
+		for (int j = 0; j < S; j++) {
+			cards[i][j].id_i = i;
+			cards[i][j].id_j = j;
+			cards[i][j].sprite.setPosition(j * CARD_W, i * CARD_H);
 		}
 	}
 
