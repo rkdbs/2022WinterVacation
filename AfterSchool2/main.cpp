@@ -25,6 +25,10 @@ int main(void) {
 	Vector2i mouse_pos; // i : 마우스 좌표(정수)
 	int flipped_num = 0; // 마우스 누른 횟수
 
+	long start_time; // 시작 시각
+	long spent_time; // 현재 시각
+	long delay_time; // 바로 원래로 뒤집혀지지 않도록 딜레이를 줌, 딜레이 시작 시각
+
 	Texture t[8 + 1];
 	t[0].loadFromFile("./resources/images/back.jpg");
 	t[1].loadFromFile("./resources/images/ca0.jpg");
@@ -60,8 +64,12 @@ int main(void) {
 		}
 	}
 
+	start_time = clock();
+	delay_time = start_time;
+
 	while (window.isOpen()) {
 		mouse_pos = Mouse::getPosition(window);
+		spent_time = clock() - start_time;
 
 		Event event;
 		while (window.pollEvent(event)) {
@@ -81,6 +89,10 @@ int main(void) {
 								if (cards[i][j].is_clicked == 0) {
 									cards[i][j].is_clicked = 1;
 									flipped_num++;
+									// 두 개를 뒤집었다면
+									if (flipped_num == 2) {
+										delay_time = spent_time;
+									}
 								}
 							}
 						}
@@ -101,15 +113,20 @@ int main(void) {
 			}
 		}
 		
-		// 뒤집한 카드가 2개라면 TODO : 두 번째 카드는 바로 다시 뒤집어지지 않게 하기
+		// 뒤집한 카드가 2개라면
 		if (flipped_num == 2) {
-			for (int i = 0; i < S; i++)
-				for (int j = 0; j < S; j++)
-					cards[i][j].is_clicked = 0;
-			flipped_num = 0;
+			// 두 카드가 뒤집힌지 1초 이내라면
+			if(spent_time - delay_time <= 1000) {
+			}
+			else {
+				for (int i = 0; i < S; i++)
+					for (int j = 0; j < S; j++)
+						cards[i][j].is_clicked = 0;
+				flipped_num = 0;
+			}
 		}
 
-		sprintf(info, "(%d, %d) click %d\n", mouse_pos.x, mouse_pos.y, flipped_num);
+		sprintf(info, "(%d, %d) clicks %d %d\n", mouse_pos.x, mouse_pos.y, spent_time/1000,delay_time/1000);
 		text.setString(info);
 
 		window.clear(Color::Black);
