@@ -15,28 +15,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="switch.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="rand.c">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="문자열 덧붙이기.c">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="구조체.c">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="함수.c">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="열거형.c">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="swap.c">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="shuffle.c">
+    <ClCompile Include="main.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>

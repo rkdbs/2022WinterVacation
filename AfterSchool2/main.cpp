@@ -17,6 +17,16 @@ struct Card {
 	int is_cleared; // 정답을 맞춘 카드인지
 };
 
+struct SButters {
+	SoundBuffer BGM;
+	SoundBuffer TRUE;
+	SoundBuffer FALSE;
+};
+
+struct Textures {
+	Texture gameover;
+};
+
 void swap_card(struct Card* c1, struct Card* c2) {
 	struct Card temp = *c1;
 	*c1 = *c2;
@@ -24,10 +34,13 @@ void swap_card(struct Card* c1, struct Card* c2) {
 }
 
 int main(void) {
+	struct Textures p;
+	p.gameover.loadFromFile("./resources/images/gameover.png");
+
 	int CARD_W = 200;
 	int CARD_H = 200;
 
-	RenderWindow window(VideoMode(1200, 800), "AfterSchool2");
+	RenderWindow window(VideoMode(800, 800), "AfterSchool2");
 	window.setFramerateLimit(60);
 
 	Vector2i mouse_pos; // i : 마우스 좌표(정수)
@@ -36,6 +49,8 @@ int main(void) {
 	long start_time; // 시작 시각
 	long spent_time; // 현재 시각
 	long delay_time; // 바로 원래로 뒤집혀지지 않도록 딜레이를 줌, 딜레이 시작 시각
+
+	srand(time(0));
 
 	Texture t[8 + 1];
 	t[0].loadFromFile("./resources/images/back.jpg");
@@ -54,9 +69,25 @@ int main(void) {
 	Text text;
 	text.setFont(font);
 	text.setCharacterSize(30);
-	text.setFillColor(Color::Blue);
+	text.setFillColor(Color::White);
 	text.setPosition(0, 0);
 	char info[40];
+
+	struct SButters sb;
+	sb.TRUE.loadFromFile("./resources/sounds/true.wav");
+	sb.FALSE.loadFromFile("./resources/sounds/false.ogg");
+
+	Sound TRUE_sound;
+	TRUE_sound.setBuffer(sb.TRUE);
+	// TRUE_sound.setVolume(50);
+
+	Sound FALSE_sound;
+	FALSE_sound.setBuffer(sb.FALSE);
+	// FALSE_sound.setVolume(40);
+
+	Sprite gameover_sprite;
+	gameover_sprite.setTexture(p.gameover);
+	gameover_sprite.setPosition(250, 300);
 
 	struct Card compare_card; // 첫 번째로 뒤집힌 카드
 	struct Card cards[S][S];
@@ -124,10 +155,12 @@ int main(void) {
 											if (compare_card.type == cards[i][j].type) {
 												cards[i][j].is_cleared = 1;
 												cards[compare_card.id_i][compare_card.id_j].is_cleared = 1;
+												TRUE_sound.play();
 											}
 											// 두 카드가 다른 종류이면
 											else {
 												delay_time = spent_time;
+												FALSE_sound.play();
 											}
 										}
 									}
@@ -164,7 +197,7 @@ int main(void) {
 			}
 		}
 
-		sprintf(info, "%d\n", spent_time/1000);
+		sprintf(info, "TIME : %d\n", spent_time/1000);
 		text.setString(info);
 
 		window.clear(Color::Black);
@@ -175,6 +208,10 @@ int main(void) {
 		}
 
 		window.draw(text);
+
+		if (spent_time / 1000 >= 50) {
+			window.draw(gameover_sprite);
+		}
 
 		window.display();
 	}
