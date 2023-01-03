@@ -4,10 +4,10 @@ using namespace sf;
 
 struct Player {
 	RectangleShape sprite;
-	int fps; // frames per sec
 	int idx;  // 애니메이션 index
 	int frames; // 애니메이션 frame수
 	long ani_time; // 애니메이션이 바뀔 때의 시각
+	long ani_delay; // 화면 전환의 
 };
 int main(void) {
 	RenderWindow window(VideoMode(1200, 800), "Animation");
@@ -29,12 +29,12 @@ int main(void) {
 	run[9].loadFromFile("./animation/Run__009.png");
 
 	struct Player player;
-	player.fps = 10;
 	player.frames = 10;
 	player.idx = 0;
 	player.sprite.setTexture(&run[0]);
 	player.sprite.setSize(Vector2f(90, 120));
-	player.sprite.setPosition(200, 600);
+	player.sprite.setPosition(200, 400);
+	player.ani_delay = 1000 / player.frames / 2; // 0.5초마다 걸음
 
 	start_time = clock();
 	player.ani_time = start_time;
@@ -52,7 +52,7 @@ int main(void) {
 		}
 		
 		// 0.1초마다 애니메이션 그림이 바뀜
-		while (spent_time - player.ani_time > 1000 / player.frames) {
+		while (spent_time - player.ani_time > player.ani_delay) {
 			player.ani_time = spent_time;
 			player.sprite.setTexture(&run[player.idx % player.frames]);
 			player.idx++;
