@@ -48,6 +48,12 @@ int main(void) {
 			switch (event.type) {
 			case Event::Closed:
 				window.close();
+			case Event::KeyPressed:
+				if (event.key.code == Keyboard::Space) {
+					// มกวม
+					player.sprite.move(0, -3);
+				}
+				break;
 			default :
 				break;
 			}
