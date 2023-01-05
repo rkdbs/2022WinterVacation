@@ -63,8 +63,8 @@ int main(void) {
 			case Event::KeyPressed:
 				if (event.key.code == Keyboard::Space) {
 					// มกวม
-					player.is_jumping = 1;
 					player.jumping_time = spent_time;
+					player.is_jumping = 1;
 				}
 				break;
 			default :

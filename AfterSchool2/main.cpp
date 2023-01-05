@@ -25,6 +25,7 @@ struct SButters {
 
 struct Textures {
 	Texture gameover;
+	Texture finish;
 };
 
 void swap_card(struct Card* c1, struct Card* c2) {
@@ -36,9 +37,11 @@ void swap_card(struct Card* c1, struct Card* c2) {
 int main(void) {
 	struct Textures p;
 	p.gameover.loadFromFile("./resources/images/gameover.png");
+	p.finish.loadFromFile("./resources/images/finish.png");
 
 	int CARD_W = 200;
 	int CARD_H = 200;
+	int cnt = 0; // 정답 개수 적립용
 
 	RenderWindow window(VideoMode(800, 800), "AfterSchool2");
 	window.setFramerateLimit(60);
@@ -87,7 +90,11 @@ int main(void) {
 
 	Sprite gameover_sprite;
 	gameover_sprite.setTexture(p.gameover);
-	gameover_sprite.setPosition(250, 300);
+	gameover_sprite.setPosition(250, 280);
+
+	Sprite finish_sprite;
+	finish_sprite.setTexture(p.finish);
+	finish_sprite.setPosition(250, 280);
 
 	struct Card compare_card; // 첫 번째로 뒤집힌 카드
 	struct Card cards[S][S];
@@ -144,7 +151,6 @@ int main(void) {
 									if (cards[i][j].is_clicked == 0) {
 										cards[i][j].is_clicked = 1;
 										flipped_num++;
-
 										// 뒤집혀진 카드가 한 개라면
 										if (flipped_num == 1) {
 											compare_card = cards[i][j];
@@ -156,6 +162,7 @@ int main(void) {
 												cards[i][j].is_cleared = 1;
 												cards[compare_card.id_i][compare_card.id_j].is_cleared = 1;
 												TRUE_sound.play();
+												cnt++;
 											}
 											// 두 카드가 다른 종류이면
 											else {
@@ -197,10 +204,18 @@ int main(void) {
 			}
 		}
 
+		for (int i = 0; i < S; i++) {
+			for (int j = 0; j < S; j++) {
+				if (spent_time / 1000 <= 5)
+					cards[i][j].sprite.setTexture(&t[cards[i][j].type]);
+			}
+		}
+
 		sprintf(info, "TIME : %d\n", spent_time/1000);
 		text.setString(info);
+		
+		// window.clear(Color::Black);
 
-		window.clear(Color::Black);
 		for (int i = 0; i < S; i++) {
 			for (int j = 0; j < S; j++) {
 				window.draw(cards[i][j].sprite);
@@ -209,9 +224,11 @@ int main(void) {
 
 		window.draw(text);
 
-		if (spent_time / 1000 >= 50) {
+		if (cnt == 8) // 카드가 다 뒤집어졌다면
+			window.draw(finish_sprite);
+
+		else if (spent_time / 1000 >= 40) // 시간 제한
 			window.draw(gameover_sprite);
-		}
 
 		window.display();
 	}

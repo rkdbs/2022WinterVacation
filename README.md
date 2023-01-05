@@ -1,5 +1,11 @@
 # AfterSchool
-# 방과후 수업
+# 방과후 C프로젝트
+
+AfterSchool : 슈팅게임
+
+AfterSchool2 : 카드 게임
+
+mp3(출처) : https://opengameart.org/content/platformer-game-music-pack
 
 리소스 출처
 

@@ -6,11 +6,13 @@
 * 3) sound effect 개선
 * 4) 총알 위치 체계적으로
 */
+
 #include <stdio.h>
-#include <stdlib.h>
-#include <SFML/Audio.hpp> // SoundBuffer 사용
-#include <time.h>
 #include <SFML/Graphics.hpp>
+#include <stdlib.h>
+#include <time.h>
+#include <SFML/Audio.hpp> // SoundBuffer 사용
+#include <Windows.h>
 
 using namespace sf;
 
@@ -26,7 +28,7 @@ struct Player {
 // 총알
 struct Bullet {
     RectangleShape sprite;
-    int is_fired;
+    int is_fired; // 발사여부
 };
 
 struct Enemy {
@@ -60,8 +62,8 @@ struct Textures {
 
 struct SButters {
     SoundBuffer BGM;
-    SoundBuffer rumble;
     SoundBuffer item_speed;
+    SoundBuffer rumble;
 };
 
 // obj1과 obj2 충돌여부
@@ -77,6 +79,15 @@ const int W_WIDTH = 1200, W_HEIGHT = 600; // 창의 크기
 const int GO_WIDTH = 320, GO_HEIGHT = 240; // 게임오버 그림의 크기
 
 int main(void) {
+
+// console을 가리기 위한 방법(vcpkg)를 이용해서 lib추가가 어려웠음)
+// WARNING 이 방법은 콘솔창을 제거하는 것이 아니라 메모리 낭비가 됨
+#ifdef WIN32
+    HWND hwnd = GetConsoleWindow();
+    ShowWindow(hwnd, SW_HIDE);
+#endif // WIN32
+
+
     struct Textures t;
     t.bg.loadFromFile("./resources/images/background.jpg");
     t.enemy.loadFromFile("./resources/images/enemy.png");
